@@ -1,0 +1,2 @@
+{:deps {kunagi/appkernel {:local/root "/p/appkernel"}}
+ :paths ["src" "target"]}
