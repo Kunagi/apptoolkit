@@ -1,4 +1,4 @@
 {:watch-dirs ["src"
-              "/p/bindscript/src"
               "/p/appkernel/src"]
- :open-file-command "emacsclient"}
+ :open-file-command "emacsclient"
+ :launch-js ["google-chrome" :open-url]}
