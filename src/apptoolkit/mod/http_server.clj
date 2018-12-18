@@ -20,7 +20,7 @@
   <body>
     <div id=\"app\">Loading...</div>
     <script src=\"/cljs-out/dev-main.js\" type=\"text/javascript\"></script>
-    <script>apptoolkit.browserapp.start();</script>
+    <script>apptoolkit.browserapp.api.start();</script>
   </body>
   </html>")
 
