@@ -4,7 +4,9 @@
    [ring.middleware.reload :as ring-reload]
    [org.httpkit.server :as http-kit]
    [compojure.core :as compojure]
-   [compojure.route :as compojure-route]))
+   [compojure.route :as compojure-route]
+
+   [appkernel.api :as appkernel]))
 
 
 (def port 3000)
@@ -41,7 +43,8 @@
 
 (defn start!
   [db]
-  (let [routes-from-modules [] ;; (app/extensions-get-concatinated db :http-server/routes :routes)
+  (let [;; routes-from-modules [] (app/extensions-get-concatinated db :http-server/routes :routes)
+        routes-from-modules (appkernel/execute-query-sync-and-merge-results db [:http-server/routes])
         plain-routes (into [] routes-from-modules)
         plain-routes (into plain-routes default-routes)]
     (http-kit/run-server (app-routes plain-routes) {:port port}))
