@@ -9,6 +9,7 @@
 
         ;; cljs
         re-frame                  {:mvn/version "0.10.5"}
+        cljs-ajax                 {:mvn/version "0.8.0"}
         kunagi/material-desktop   {:mvn/version "RELEASE"}
 
         ;; clj
