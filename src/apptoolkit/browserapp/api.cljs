@@ -13,9 +13,6 @@
    [material-desktop.desktop :as desktop]))
 
 
-(.log js/console "loading browserapp")
-
-
 (defn- integrate-event-handler-with-re-frame
   [event-key]
   (rf/reg-event-db
@@ -26,11 +23,12 @@
 
 (defn- integrate-event-handlers-with-re-frame
   []
+  (tap> [::integrate-event-handlers-with-re-frame])
   (doall (map integrate-event-handler-with-re-frame
               (-> @rf-db/app-db
                   (get-in [:appkernel/event-handlers])
-                  (keys)
-                  (->> (into #{}))))))
+                  (vals)
+                  (->> (map :event) (into #{}))))))
 
 
 (defn root-ui []
@@ -49,7 +47,7 @@
 
 
 (defn start []
-  (.log js/console "apptoolkit.browserapp.api.start()")
+  (tap> ::start)
   (init/install-roboto-css)
   (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
