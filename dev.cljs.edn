@@ -1,2 +1,5 @@
-{
- :main            apptoolkit.browserapp}
+^{:watch-dirs ["src"
+               "/p/appkernel/src"]
+  :open-file-command "emacsclient"
+  :launch-js ["google-chrome" :open-url]}
+{:main apptoolkit.figwheel-adapter}

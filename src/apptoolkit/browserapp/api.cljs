@@ -7,6 +7,7 @@
    [appkernel.lifecycle :as lifecycle]
    [appkernel.integration :as integration]
    [appkernel.eventhandling :as eventhandling]
+   [appkernel.api :as app]
 
    [material-desktop.init :as init]
    [material-desktop.components :as mdc]
@@ -15,13 +16,17 @@
 
 (defn- integrate-event-handler-with-re-frame
   [event-key]
+  (tap> [::integrate-event-handler-with-re-frame event-key])
   (rf/reg-event-db
    event-key
-   (fn [db event]
-     (eventhandling/handle-event db event))))
+   (fn [db [event-name event-args]]
+     (let [event (-> event-args
+                     (or {}) (or event-args {})
+                     (assoc :app/event event-name))]
+       (eventhandling/handle-event db event)))))
 
 
-(defn- integrate-event-handlers-with-re-frame
+(defn integrate-event-handlers-with-re-frame
   []
   (tap> [::integrate-event-handlers-with-re-frame])
   (doall (map integrate-event-handler-with-re-frame
@@ -51,13 +56,7 @@
   (init/install-roboto-css)
   (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
-  (rf/dispatch-sync [:appkernel/initialized])
-  (mount-app))
-
-
-(defn on-figwheel-after-load []
-  ;;(app/log :info ::figwheel-after-load)
-  (integrate-event-handlers-with-re-frame)
+  (app/start!)
   (mount-app))
 
 
@@ -65,8 +64,9 @@
  ::init
  (fn [db _]
    (merge db (integration/integrate!
-               (fn [f] (swap! rf-db/app-db f))
-               (fn [] @rf-db/app-db)))))
+              {:db-f (fn [f] (swap! rf-db/app-db f))
+               :update-db-f (fn [] @rf-db/app-db)
+               :dispatch-f (fn [event] (rf/dispatch [(:app/event event) event]))}))))
 
 
 (rf/reg-sub

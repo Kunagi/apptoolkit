@@ -59,7 +59,7 @@
 
 
 (app/def-event-handler ::starter
-  :event :appkernel/app-started
+  :event :app/started
   :f (fn [db event]
        (start! db)
        db))
