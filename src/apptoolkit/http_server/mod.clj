@@ -1,4 +1,4 @@
-(ns apptoolkit.mod.http-server
+(ns apptoolkit.http-server.mod
   (:require
    [ring.middleware.defaults :as ring-defaults]
    [ring.middleware.reload :as ring-reload]
@@ -6,10 +6,13 @@
    [compojure.core :as compojure]
    [compojure.route :as compojure-route]
 
-   [appkernel.api :as appkernel]))
+   [appkernel.api :as app]))
+
+(tap> ::loading)
+
 
 (def dev-port 3000)
-(def dev-app-js-path "cljs-out/dev-main.js")
+
 
 (defn app-html [app-js-path]
   (str
@@ -44,17 +47,19 @@
 
 (defn start!
   [db]
-  (let [;; routes-from-modules [] (app/extensions-get-concatinated db :http-server/routes :routes)
-        app-js-path (get db :http-server/app-js-path dev-app-js-path)
+  (let [app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")
         port (get db :http-server/port dev-port)
-        routes-from-modules (appkernel/execute-query-sync-and-merge-results db [:http-server/routes])
+        routes-from-modules (app/execute-query-sync-and-merge-results db [:http-server/routes])
         plain-routes (into [] routes-from-modules)
         plain-routes (into plain-routes (default-routes app-js-path))]
+    (tap> [::start! {:port port}])
     (http-kit/run-server (app-routes plain-routes) {:port port}))
     ;; (app/log :debug ::started {:port port}))
   db)
 
 
-;; (app/def-module :http-server
-
-;;   :on-start #(start! %))
+(app/def-event-handler ::starter
+  :event :appkernel/app-started
+  :f (fn [db event]
+       (start! db)
+       db))
