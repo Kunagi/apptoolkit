@@ -11,7 +11,9 @@
 
    [material-desktop.init :as init]
    [material-desktop.components :as mdc]
-   [material-desktop.desktop :as desktop]))
+   [material-desktop.desktop :as desktop]
+
+   [apptoolkit.browserapp.subscriptions]))
 
 
 (defn- integrate-event-handler-with-re-frame
@@ -42,7 +44,7 @@
     [desktop/Desktop]]
    [:hr]
    [:h4 "db"]
-   [:pre (str @(rf/subscribe [:db]))]])
+   [:pre (str @(rf/subscribe [:app/db]))]])
 
 
 (defn mount-app []
@@ -67,9 +69,3 @@
               {:db-f (fn [f] (swap! rf-db/app-db f))
                :update-db-f (fn [] @rf-db/app-db)
                :dispatch-f (fn [event] (rf/dispatch [(:app/event event) event]))}))))
-
-
-(rf/reg-sub
- :db
- (fn [db _]
-   db))
