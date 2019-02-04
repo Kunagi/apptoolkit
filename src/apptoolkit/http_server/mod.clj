@@ -14,7 +14,7 @@
 (def dev-port 3000)
 
 
-(defn app-html [app-js-path]
+(defn app-html [page-config]
   (str
    "<!DOCTYPE html>
    <html>
@@ -25,13 +25,13 @@
    </head>
    <body>
      <div id=\"app\">Loading...</div>
-     <script src=\"" app-js-path "\" type=\"text/javascript\"></script>
+     <script src=\"" (:app-js-path page-config) nil "\"\"></script>
      <script>apptoolkit.browserapp.api.start();</script>
    </body>
    </html>"))
 
-(defn default-routes [app-js-path]
-  [(compojure/GET  "/" [] (app-html app-js-path))
+(defn default-routes [page-config]
+  [(compojure/GET  "/" [] (app-html page-config))
    (compojure-route/files "/" {:root "target/public"})
    (compojure-route/not-found "404 - Page not found")])
 
@@ -47,11 +47,11 @@
 
 (defn start!
   [db]
-  (let [app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")
+  (let [page-config {:app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")}
         port (get db :http-server/port dev-port)
         routes-from-modules (app/execute-query-sync-and-merge-results db [:http-server/routes])
         plain-routes (into [] routes-from-modules)
-        plain-routes (into plain-routes (default-routes app-js-path))]
+        plain-routes (into plain-routes (default-routes page-config))]
     (tap> [::start! {:port port}])
     (http-kit/run-server (app-routes plain-routes) {:port port}))
     ;; (app/log :debug ::started {:port port}))
