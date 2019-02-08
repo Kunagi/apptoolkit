@@ -4,7 +4,6 @@
    [re-frame.core :as rf]
    [re-frame.db :as rf-db]
 
-   [appkernel.lifecycle :as lifecycle]
    [appkernel.integration :as integration]
    [appkernel.eventhandling :as eventhandling]
    [appkernel.transacting :as transacting]
