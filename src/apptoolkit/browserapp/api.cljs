@@ -7,6 +7,7 @@
    [appkernel.lifecycle :as lifecycle]
    [appkernel.integration :as integration]
    [appkernel.eventhandling :as eventhandling]
+   [appkernel.transacting :as transacting]
    [appkernel.api :as app]
 
    [material-desktop.init :as init]
@@ -23,7 +24,7 @@
    event-key
    (fn [db [event-name event-args]]
      (let [event (-> event-args
-                     (or {}) (or event-args {})
+                     (or {})
                      (assoc :app/event event-name))]
        (eventhandling/handle-event db event)))))
 
@@ -36,6 +37,30 @@
                   (get-in [:appkernel/event-handlers])
                   (vals)
                   (->> (map :event) (into #{}))))))
+
+
+(defn- integrate-command-handler-with-re-frame
+  [command-key]
+  (tap> [::integrate-command-handler-with-re-frame command-key])
+  (rf/reg-event-db
+   command-key
+   (fn [db [command-name command-args]]
+     (let [command (-> command-args
+                       (or {})
+                       (assoc :app/command command-name))]
+       (-> db
+           (transacting/transact command)
+           (get :db))))))
+
+
+(defn integrate-command-handlers-with-re-frame
+  []
+  (tap> [::integrate-command-handlers-with-re-frame])
+  (doall (map integrate-command-handler-with-re-frame
+              (-> @rf-db/app-db
+                  (get-in [:appkernel/command-handlers])
+                  (vals)
+                  (->> (map :command) (into #{}))))))
 
 
 (defn root-ui []
@@ -58,6 +83,7 @@
   (init/install-roboto-css)
   (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
+  (integrate-command-handlers-with-re-frame)
   (app/start!)
   (mount-app))
 
