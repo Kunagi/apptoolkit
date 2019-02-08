@@ -5,6 +5,7 @@
         ;; common
         witek/bindscript          {:mvn/version "RELEASE"}
         kunagi/appkernel          {:mvn/version "RELEASE"}
+        kunagi/facts-db           {:mvn/version "RELEASE"}
         expound                   {:mvn/version "0.7.1"}
 
         ;; cljs
