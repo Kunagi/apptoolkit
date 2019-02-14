@@ -12,7 +12,7 @@
     (if (and (= :get (:request-method request))
              (= "/"  (:uri request)))
       (do
-        (app/start!)
+        (app/start! {})
         {:status 302
          :headers {"Location" href}})
       {:status 404

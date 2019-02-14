@@ -83,7 +83,7 @@
   (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
   (integrate-command-handlers-with-re-frame)
-  (app/start!)
+  (app/start! {})
   (mount-app))
 
 
