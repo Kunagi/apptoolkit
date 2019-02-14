@@ -27,15 +27,21 @@
 
 (defn initialize-map [id]
   (let [map-tag (.getElementById js/document id)
-        config {:center {:lat -34.397
-                         :lng 150.644}
-                :zoom 8}
+        uluru {:lat 48.35087
+               :lng 13.3112413}
+        config {:center uluru
+                :zoom 7}
         map (js/google.maps.Map. map-tag (clj->js config))
         places-service (js/google.maps.places.PlacesService. map)]
     (rf/dispatch [::map-initialized {:js-loaded? true
                                      :initialized? true
                                      :map map
                                      :places-service places-service}])))
+
+
+(defn create-marker [map-id marker-props]
+  (let [marker-props (assoc marker-props :map map-id)
+        marker (js/google.maps.Marker. (clj->js marker-props))]))
 
 
 (defn GoogleMap [id]
