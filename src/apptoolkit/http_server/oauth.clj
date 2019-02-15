@@ -10,15 +10,17 @@
 
 (defn create-base-config
   [provider-key provider-specific-config]
-  (merge
-   {:launch-uri       (str "/oauth/" (name provider-key))
-    :redirect-uri     (str "/oauth/" (name provider-key) "/callback")
-    :landing-uri      (str "/oauth/completed")
-    :basic-auth?      true}
-   provider-specific-config))
+  (let [own-uri (get-in (app/db) [:http-server/uri])
+        prefix (or own-uri "")]
+    (merge
+     {:launch-uri       (str "/oauth/" (name provider-key))
+      :redirect-uri     (str prefix "/oauth/" (name provider-key) "/callback")
+      :landing-uri      (str "/oauth/completed")
+      :basic-auth?      true}
+     provider-specific-config)))
 
 
-(def google-base-config
+(defn google-base-config []
   (create-base-config
    :google
    {:authorize-uri    "https://accounts.google.com/o/oauth2/v2/auth"
@@ -29,7 +31,7 @@
 (defn create-google-config
   [db]
   (if-let [custom-config (get-in db [:oauth/google])]
-    (-> google-base-config
+    (-> (google-base-config)
         (merge custom-config))))
 
 
