@@ -1,5 +1,7 @@
 (ns apptoolkit.auth.mod
   (:require
+   [compojure.core :as compojure]
+
    [appkernel.api :as app]
 
    [apptoolkit.auth.user-ids-by-oauth-projector]))
@@ -46,3 +48,15 @@
   (cond
     oauth (authenticate-by-oauth oauth)
     :else (fail "Unsupported authentication-data.")))
+
+
+(defn logout-handler [request]
+  {:session nil
+   :status 303
+   :headers {"Location" "/"}})
+
+
+(app/def-query-responder ::logout-route
+  :query :http-server/routes
+  :f (fn [db args]
+       [(compojure/GET "/logout" [] logout-handler)]))

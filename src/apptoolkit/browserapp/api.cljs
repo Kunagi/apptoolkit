@@ -1,5 +1,6 @@
 (ns apptoolkit.browserapp.api
   (:require
+   [cljs.reader :as reader]
    [reagent.core :as r]
    [re-frame.core :as rf]
    [re-frame.db :as rf-db]
@@ -77,13 +78,15 @@
    (js/document.getElementById "app")))
 
 
-(defn start []
-  (tap> ::start)
+(defn start [config-edn]
+  (tap> [::start config-edn])
   (init/install-roboto-css)
   (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
   (integrate-command-handlers-with-re-frame)
-  (app/start! {})
+  (app/start! (if config-edn
+                (reader/read-string config-edn)
+                {}))
   (mount-app))
 
 
@@ -91,6 +94,6 @@
  ::init
  (fn [db _]
    (merge db (integration/integrate!
-              {:db-f (fn [f] (swap! rf-db/app-db f))
-               :update-db-f (fn [] @rf-db/app-db)
+              {:db-f (fn [] @rf-db/app-db)
+               :update-db-f (fn [f] (swap! rf-db/app-db f))
                :dispatch-f (fn [event] (rf/dispatch [(:app/event event) event]))}))))

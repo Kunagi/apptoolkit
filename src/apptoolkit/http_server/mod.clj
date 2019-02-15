@@ -35,25 +35,27 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
   "<div class='preloader'> <div>Loading</div> <span class='line line-1'></span> <span class='line line-2'></span> <span class='line line-3'></span> <span class='line line-4'></span> <span class='line line-5'></span> <span class='line line-6'></span> <span class='line line-7'></span> <span class='line line-8'></span> </div>")
 
 (defn app-html [page-config]
-  (str
-   "<!DOCTYPE html>
-   <html>
-   <head>
-     <meta charset=\"UTF-8\">
-     <meta name=\"viewport\" content=\"minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no\">
-     <link rel=\"icon\" href=\"https://clojurescript.org/images/cljs-logo-icon-32.png\">"
-   "<style>"
-   preloader-css
-   "</style>"
-   " </head>
-   <body>
-     <div id=\"app\">"
-   preloader-html
-   "</div>
-     <script src=\"" (:app-js-path page-config) nil "\"\"></script>
-     <script>apptoolkit.browserapp.api.start();</script>
-   </body>
-   </html>"))
+  (fn [request]
+    (let [browserapp-config {:auth/user-id (-> request :session :auth/user-id)}]
+      (str
+       "<!DOCTYPE html>
+       <html>
+       <head>
+         <meta charset=\"UTF-8\">
+         <meta name=\"viewport\" content=\"minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no\">
+         <link rel=\"icon\" href=\"https://clojurescript.org/images/cljs-logo-icon-32.png\">"
+       "<style>"
+       preloader-css
+       "</style>"
+       " </head>
+       <body>
+         <div id=\"app\">"
+       preloader-html
+       "</div>
+         <script src=\"" (:app-js-path page-config) nil "\"\"></script>
+         <script>apptoolkit.browserapp.api.start('" (pr-str browserapp-config) "');</script>
+       </body>
+       </html>"))))
 
 (defn default-routes [page-config]
   [(compojure/GET  "/" [] (app-html page-config))
