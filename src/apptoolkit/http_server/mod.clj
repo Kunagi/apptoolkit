@@ -1,12 +1,16 @@
 (ns apptoolkit.http-server.mod
   (:require
    [ring.middleware.defaults :as ring-defaults]
+   [ring.middleware.params :as ring-params]
    [ring.middleware.reload :as ring-reload]
+   [ring.middleware.oauth2 :as ring-oauth]
    [org.httpkit.server :as http-kit]
    [compojure.core :as compojure]
    [compojure.route :as compojure-route]
 
-   [appkernel.api :as app]))
+   [appkernel.api :as app]
+
+   [apptoolkit.http-server.oauth :as oauth]))
 
 (tap> ::loading)
 
@@ -53,28 +57,35 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
 
 (defn default-routes [page-config]
   [(compojure/GET  "/" [] (app-html page-config))
+   (compojure/GET "/ping" [] (fn [request] (str request)))
+   (compojure/GET "/oauth/completed" [] oauth/handle-oauth-completed)
    (compojure-route/files "/" {:root "target/public"})
    (compojure-route/not-found "404 - Page not found")])
 
-(defn- app-routes [plain-routes]
+(defn- app-routes [plain-routes oauth2-config]
 
   (-> compojure/routes
       (apply plain-routes)
 
-      ;;(ring-reload/wrap-reload) ;; TODO remove for prod
+      (ring-oauth/wrap-oauth2 oauth2-config)
 
-      (ring-defaults/wrap-defaults ring-defaults/site-defaults)))
+      (ring-params/wrap-params)
+
+      (ring-defaults/wrap-defaults
+       (-> ring-defaults/site-defaults
+           (assoc-in [:session :cookie-attrs :same-site] :lax)))))
 
 
 (defn start!
   [db]
   (let [page-config {:app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")}
         port (get db :http-server/port dev-port)
-        routes-from-modules (app/execute-query-sync-and-merge-results db [:http-server/routes])
+        oauth2-config (oauth/create-ring-oauth2-config db)
+        routes-from-modules (app/q db [:http-server/routes])
         plain-routes (into [] routes-from-modules)
         plain-routes (into plain-routes (default-routes page-config))]
     (tap> [::start! {:port port}])
-    (http-kit/run-server (app-routes plain-routes) {:port port}))
+    (http-kit/run-server (app-routes plain-routes oauth2-config) {:port port}))
     ;; (app/log :debug ::started {:port port}))
   db)
 
