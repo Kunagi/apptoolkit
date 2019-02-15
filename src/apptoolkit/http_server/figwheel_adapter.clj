@@ -1,6 +1,7 @@
 (ns apptoolkit.http-server.figwheel-adapter
   (:require
    [appkernel.load-this-namespace-to-activate-dev-mode]
+   [apptoolkit.logging-output]
    [appkernel.api :as app]
 
    [apptoolkit.http-server.mod :as http-server]))
