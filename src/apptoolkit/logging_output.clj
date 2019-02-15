@@ -25,6 +25,4 @@
       (println))))
 
 
-(tap> [:inf ::hello "yey!"])
-
 (reset! logging/!printer log-record)
