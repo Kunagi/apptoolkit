@@ -8,6 +8,7 @@
  (fn [db _]
    db))
 
+;;; projections
 
 (rf/reg-sub
  :app/projections
@@ -38,3 +39,11 @@
    (rf/subscribe [:app/projection sub-args]))
  (fn [projection _]
    (:db projection)))
+
+
+;;; events
+
+(rf/reg-sub
+ :app/models
+ (fn [db _]
+   (get db :appkernel/models)))
