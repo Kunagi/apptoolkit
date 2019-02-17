@@ -86,22 +86,21 @@
                   (->> (map :command) (into #{}))))))
 
 
-(defn root-ui []
-  [:div
-   [mdc/ErrorBoundary
-    [desktop/Desktop]]])
+(defonce !ui-root-component (atom [:div "ui-root-component"]))
 
 
 (defn mount-app []
   (r/render
-   [root-ui]
+   [mdc/ErrorBoundary
+    @!ui-root-component]
    (js/document.getElementById "app")))
 
 
-(defn ^:export start [config-edn]
+(defn start [config-edn ui-root-component]
   (tap> [::start config-edn])
+  (reset! !ui-root-component ui-root-component)
   (init/install-roboto-css)
-  (rf/dispatch-sync [::init])
+  (rf/dispatch-sync [::init ui-root-component])
   (integrate-event-handlers-with-re-frame)
   (integrate-command-handlers-with-re-frame)
   (app/start! (if config-edn
@@ -113,7 +112,8 @@
 (rf/reg-event-db
  ::init
  (fn [db _]
-   (merge db (integration/integrate!
-              {:db-f (fn [] @rf-db/app-db)
-               :update-db-f (fn [f] (swap! rf-db/app-db f))
-               :dispatch-f (fn [event] (rf/dispatch [(:app/event event) event]))}))))
+   (-> db
+       (merge (integration/integrate!
+               {:db-f (fn [] @rf-db/app-db)
+                :update-db-f (fn [f] (swap! rf-db/app-db f))
+                :dispatch-f (fn [event] (rf/dispatch [(:app/event event) event]))})))))

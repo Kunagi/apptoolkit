@@ -9,6 +9,7 @@
    [compojure.route :as compojure-route]
 
    [appkernel.api :as app]
+   [appkernel.paths :as paths]
 
    [apptoolkit.http-server.oauth :as oauth]))
 
@@ -36,7 +37,8 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
 
 (defn app-html [page-config]
   (fn [request]
-    (let [browserapp-config {:auth/user-id (-> request :session :auth/user-id)}]
+    (let [browserapp-config {:auth/user-id (-> request :session :auth/user-id)
+                             :app/name (:app-name page-config)}]
       (str
        "<!DOCTYPE html>
        <html>
@@ -53,7 +55,7 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
        preloader-html
        "</div>
          <script src=\"" (:app-js-path page-config) nil "\"\"></script>
-         <script>apptoolkit.browserapp.api.start('" (pr-str browserapp-config) "');</script>
+         <script>" (-> page-config :app-name (.replace "-" "_")) ".main.start('" (pr-str browserapp-config) "');</script>
        </body>
        </html>"))))
 
@@ -81,7 +83,8 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
 
 (defn start!
   [db]
-  (let [page-config {:app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")}
+  (let [page-config {:app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")
+                     :app-name (paths/app-name)}
         port (get db :http-server/port dev-port)
         oauth2-config (oauth/create-ring-oauth2-config db)
         routes-from-modules (app/q db [:http-server/routes])
