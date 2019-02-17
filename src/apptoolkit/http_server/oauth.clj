@@ -4,6 +4,7 @@
 
    [appkernel.api :as app]
 
+   [apptoolkit.secrets :as secrets]
    [apptoolkit.user.mod]
    [apptoolkit.auth.mod :as auth]))
 
@@ -11,13 +12,16 @@
 (defn create-base-config
   [provider-key provider-specific-config]
   (let [own-uri (get-in (app/db) [:http-server/uri])
-        prefix (or own-uri "")]
-    (merge
-     {:launch-uri       (str "/oauth/" (name provider-key))
-      :redirect-uri     (str prefix "/oauth/" (name provider-key) "/callback")
-      :landing-uri      (str "/oauth/completed")
-      :basic-auth?      true}
-     provider-specific-config)))
+        prefix (or own-uri "")
+        secrets (get-in secrets/secrets [:oauth provider-key])]
+    (if-not secrets
+      nil
+      (-> {:launch-uri       (str "/oauth/" (name provider-key))
+           :redirect-uri     (str prefix "/oauth/" (name provider-key) "/callback")
+           :landing-uri      (str "/oauth/completed")
+           :basic-auth?      true}
+          (merge provider-specific-config)
+          (merge secrets)))))
 
 
 (defn google-base-config []
@@ -30,9 +34,9 @@
 
 (defn create-google-config
   [db]
-  (if-let [custom-config (get-in db [:oauth/google])]
+  (if-let [app-config (get-in db [:oauth :google])]
     (-> (google-base-config)
-        (merge custom-config))))
+        (merge app-config))))
 
 
 (defn create-ring-oauth2-config

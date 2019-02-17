@@ -61,7 +61,8 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
   [(compojure/GET  "/" [] (app-html page-config))
    (compojure/GET "/ping" [] (fn [request] (str request)))
    (compojure/GET "/oauth/completed" [] oauth/handle-oauth-completed)
-   (compojure-route/files "/" {:root "target/public"})
+   (compojure-route/files "/" {:root "target/public"}) ;; TODO remove in prod
+   (compojure-route/resources "/" {:root "public"})
    (compojure-route/not-found "404 - Page not found")])
 
 (defn- app-routes [plain-routes oauth2-config]
