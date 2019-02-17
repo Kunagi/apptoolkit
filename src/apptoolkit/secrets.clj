@@ -10,6 +10,11 @@
   (let [file (io/as-file (str (paths/configs-dir) "/secrets.edn"))]
     (if-not (.exists file)
       nil
-      (edn/read-string (slurp file)))))
+      (try
+        (edn/read-string (slurp file))
+        (catch Exception ex
+          (throw (ex-info (str "Failed to read file " (.getAbsolutePath file))
+                          {:file file})))))))
+
 
 (def secrets (load-secrets))
