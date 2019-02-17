@@ -98,7 +98,7 @@
    (js/document.getElementById "app")))
 
 
-(defn start [config-edn]
+(defn ^:export start [config-edn]
   (tap> [::start config-edn])
   (init/install-roboto-css)
   (rf/dispatch-sync [::init])

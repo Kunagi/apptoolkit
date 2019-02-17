@@ -10,38 +10,37 @@
 
 
 (defn create-base-config
-  [provider-key provider-specific-config]
-  (let [own-uri (get-in (app/db) [:http-server/uri])
-        prefix (or own-uri "")
-        secrets (get-in secrets/secrets [:oauth provider-key])]
-    (if-not secrets
-      nil
-      (-> {:launch-uri       (str "/oauth/" (name provider-key))
-           :redirect-uri     (str prefix "/oauth/" (name provider-key) "/callback")
-           :landing-uri      (str "/oauth/completed")
-           :basic-auth?      true}
-          (merge provider-specific-config)
-          (merge secrets)))))
+  [db provider-key provider-specific-config]
+  (let [users-config (get-in db [:oauth provider-key])]
+    (if (:enabled? users-config)
+      (let [own-uri (get-in (app/db) [:http-server/uri])
+            prefix (or own-uri "")
+            secrets (get-in secrets/secrets [:oauth provider-key])]
+        (if-not secrets
+          nil
+          (-> {:launch-uri       (str "/oauth/" (name provider-key))
+               :redirect-uri     (str prefix "/oauth/" (name provider-key) "/callback")
+               :landing-uri      (str "/oauth/completed")
+               :basic-auth?      true}
+              (merge provider-specific-config)
+              (merge users-config)
+              (merge secrets)))))))
 
 
-(defn google-base-config []
+(defn create-google-config [db]
   (create-base-config
+   db
    :google
    {:authorize-uri    "https://accounts.google.com/o/oauth2/v2/auth"
     :access-token-uri "https://www.googleapis.com/oauth2/v4/token"
     :scopes           ["openid" "email" "profile"]}))
 
 
-(defn create-google-config
-  [db]
-  (if-let [app-config (get-in db [:oauth :google])]
-    (-> (google-base-config)
-        (merge app-config))))
-
-
 (defn create-ring-oauth2-config
   [db]
-  {:google (create-google-config db)})
+  (let [google (create-google-config db)]
+    (cond-> {}
+            google (assoc :google google))))
 
 
 ;; (defn load-google-email
