@@ -56,7 +56,7 @@
    :headers {"Location" "/"}})
 
 
-(app/def-query-responder ::logout-route
+(app/def-query-responder ::sign-out-route
   :query :http-server/routes
   :f (fn [db args]
-       [(compojure/GET "/logout" [] logout-handler)]))
+       [(compojure/GET "/sign-out" [] logout-handler)]))
