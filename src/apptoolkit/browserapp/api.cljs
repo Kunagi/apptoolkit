@@ -49,7 +49,9 @@
      (let [event (-> event-args
                      (or {})
                      (assoc :app/event event-name))]
-       (transacting/transact db event)))))
+       (-> db
+           (transacting/transact event)
+           :db)))))
 
 
 (defn integrate-event-handlers-with-re-frame

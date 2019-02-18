@@ -12,10 +12,11 @@
   [{:as record :keys [source-ns source-name level payload]}]
   (locking lock
     (let [level-bg (case level
+                     :!!! c/on-cyan
                      :err c/on-red
                      :wrn c/on-red
-                     :inf c/on-green
-                     c/on-blue)]
+                     :inf c/on-blue
+                     c/on-grey)]
       (println
        (c/on-grey (c/white (str " " (name level) " ")))
        (level-bg (c/white (c/bold (str " " source-name " "))))
