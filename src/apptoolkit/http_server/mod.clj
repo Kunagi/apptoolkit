@@ -84,7 +84,7 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
 (defn start!
   [db]
   (let [page-config {:app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")
-                     :app-name (paths/app-name)}
+                     :app-name (:app/name db)}
         port (get db :http-server/port dev-port)
         oauth2-config (oauth/create-ring-oauth2-config db)
         routes-from-modules (app/q db [:http-server/routes])

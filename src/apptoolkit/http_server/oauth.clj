@@ -15,7 +15,7 @@
     (if (:enabled? users-config)
       (let [own-uri (get-in (app/db) [:http-server/uri])
             prefix (or own-uri "")
-            secrets (get-in secrets/secrets [:oauth provider-key])]
+            secrets (get-in (secrets/load-secrets db) [:oauth provider-key])]
         (if-not secrets
           nil
           (-> {:launch-uri       (str "/oauth/" (name provider-key))

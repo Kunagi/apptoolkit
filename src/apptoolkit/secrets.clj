@@ -6,8 +6,9 @@
    [appkernel.paths :as paths]))
 
 
-(defn load-secrets []
-  (let [file (io/as-file (str (paths/configs-dir) "/secrets.edn"))]
+(defn load-secrets [db]
+  (let [dir (paths/configs-dir (:app/name db))
+        file (io/as-file (str dir "/secrets.edn"))]
     (if-not (.exists file)
       nil
       (try
@@ -17,4 +18,3 @@
                           {:file file})))))))
 
 
-(def secrets (load-secrets))
