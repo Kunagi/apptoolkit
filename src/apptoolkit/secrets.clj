@@ -7,7 +7,7 @@
 
 
 (defn load-secrets [db]
-  (let [dir (paths/configs-dir (:app/name db))
+  (let [dir (paths/config-dir (:app/name db))
         file (io/as-file (str dir "/secrets.edn"))]
     (if-not (.exists file)
       nil
