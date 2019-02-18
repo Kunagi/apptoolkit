@@ -1,5 +1,6 @@
 (ns apptoolkit.logging-output
   (:require
+   [clojure.stacktrace :as stacktrace]
    [clojure.term.colors :as c]
    [puget.printer :as puget]
    [appkernel.logging :as logging]))
@@ -20,7 +21,11 @@
        (level-bg (c/white (c/bold (str " " source-name " "))))
        (c/white source-ns))
       (if payload
-        (puget/cprint payload {:option :here})
+        (if (instance? Throwable payload)
+          (do
+            (stacktrace/print-cause-trace payload)
+            (println (level-bg (c/white (stacktrace/root-cause payload)))))
+          (puget/cprint payload {:option :here}))
         (println))
       (println))))
 

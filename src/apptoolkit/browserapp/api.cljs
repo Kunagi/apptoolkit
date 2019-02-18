@@ -6,7 +6,7 @@
    [re-frame.db :as rf-db]
 
    [appkernel.integration :as integration]
-   [appkernel.eventhandling :as eventhandling]
+   ;; [appkernel.eventhandling :as eventhandling]
    [appkernel.transacting :as transacting]
    [appkernel.api :as app]
 
@@ -49,7 +49,7 @@
      (let [event (-> event-args
                      (or {})
                      (assoc :app/event event-name))]
-       (eventhandling/handle-event db event)))))
+       (transacting/transact db event)))))
 
 
 (defn integrate-event-handlers-with-re-frame
@@ -71,9 +71,7 @@
      (let [command (-> command-args
                        (or {})
                        (assoc :app/command command-name))]
-       (-> db
-           (transacting/transact command)
-           (get :db))))))
+       (transacting/transact db command)))))
 
 
 (defn integrate-command-handlers-with-re-frame
