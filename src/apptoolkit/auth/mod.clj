@@ -4,7 +4,8 @@
 
    [appkernel.api :as app]
 
-   [apptoolkit.auth.user-ids-by-oauth-projector]))
+   [apptoolkit.auth.events]
+   [apptoolkit.auth.projectors.users-by-oauth]))
 
 
 (defn fail
@@ -25,10 +26,14 @@
         user {:db/id user-id
               :email email
               :name name}]
-    (app/dispatch {:app/event :auth/oauth-for-user-connected
-                   :user-id user-id
-                   :oauth {:service service
-                           :sub sub}})
+    (app/dispatch {:app/command :app/passthrough-events
+                   :events [{:app/event :user/user-signed-up
+                             :user user}
+                            {:app/event :auth/user-signed-in-with-oauth
+                             :user user-id
+                             :oauth {:service service
+                                     :sub sub
+                                     :email email}}]})
     user-id))
 
 

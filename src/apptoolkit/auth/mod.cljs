@@ -1,6 +1,7 @@
 (ns apptoolkit.auth.mod
   (:require
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [apptoolkit.auth.events]))
 
 (rf/reg-sub
  :auth/user-id

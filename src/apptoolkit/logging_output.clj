@@ -12,7 +12,7 @@
   [{:as record :keys [source-ns source-name level payload]}]
   (locking lock
     (let [level-bg (case level
-                     :!!! c/on-cyan
+                     :!!! c/on-red
                      :err c/on-red
                      :wrn c/on-red
                      :inf c/on-blue

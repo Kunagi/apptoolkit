@@ -5,39 +5,17 @@
    [re-frame.core :as rf]
    [re-frame.db :as rf-db]
 
+   [material-desktop.app :as desktop-app]
    [appkernel.integration :as integration]
    ;; [appkernel.eventhandling :as eventhandling]
    [appkernel.transacting :as transacting]
    [appkernel.api :as app]
 
-   [material-desktop.init :as init]
-   [material-desktop.components :as mdc]
    [material-desktop.desktop :as desktop]
 
    [apptoolkit.browserapp.subscriptions]))
 
 
-(defn subscribe
-  ([subscription-name]
-   (subscribe subscription-name {}))
-  ([subscription-name subscription-args]
-   (if-not (qualified-keyword? subscription-name)
-     (throw (ex-info "Subscription name needs to be a qualified keyword."
-                     {:subscription-name subscription-name
-                      :subscription-args subscription-args})))
-   (if-not (or (nil? subscription-args) (map? subscription-args))
-     (throw (ex-info "Subscription args need to be a map."
-                     {:subscription-name subscription-name
-                      :subscription-args subscription-args})))
-   (rf/subscribe [subscription-name subscription-args])))
-
-
-(defn <subscribe
-  ([subscription-name]
-   (<subscribe subscription-name {}))
-  ([subscription-name subscription-args]
-   (if-let [signal (subscribe subscription-name subscription-args)]
-     @signal)))
 
 
 (defn- integrate-event-handler-with-re-frame
@@ -86,21 +64,14 @@
                   (->> (map :command) (into #{}))))))
 
 
-(defonce !ui-root-component (atom [:div "ui-root-component"]))
-
-
 (defn mount-app []
-  (r/render
-   [mdc/ErrorBoundary
-    @!ui-root-component]
-   (js/document.getElementById "app")))
+  (desktop-app/mount-app))
 
 
 (defn start [config-edn ui-root-component]
   (tap> [::start config-edn])
-  (reset! !ui-root-component ui-root-component)
-  (init/install-roboto-css)
-  (rf/dispatch-sync [::init ui-root-component])
+  (desktop-app/start ui-root-component)
+  (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
   (integrate-command-handlers-with-re-frame)
   (app/start! (if config-edn

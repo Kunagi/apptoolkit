@@ -1,6 +1,6 @@
 (ns apptoolkit.auth.ui
   (:require
-   [apptoolkit.browserapp.api :refer [<subscribe]]
+   [material-desktop.api :refer [<subscribe]]
    [material-desktop.components :as mdc]))
 
 (defn SignInCard [& {:as options :keys [text]}]

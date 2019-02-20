@@ -1,6 +1,4 @@
-{:own [kunagi/appkernel
-       kunagi/facts-db
-       kunagi/material-desktop]
+{:own [kunagi/material-desktop]
  :foreign {
            expound                   {:mvn/version "0.7.1"}
            mvxcvi/puget              {:mvn/version "1.1.0"}

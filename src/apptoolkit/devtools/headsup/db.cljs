@@ -2,7 +2,7 @@
   (:require
    [browser-headsup.api :as headsup]
    [browser-headsup.ui :refer [Data]]
-   [apptoolkit.browserapp.api :refer [<subscribe]]))
+   [material-desktop.api :refer [<subscribe]]))
 
 
 (defn Root []
