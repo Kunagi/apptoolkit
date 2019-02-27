@@ -7,7 +7,7 @@
 
 (defn Root []
   [:div
-   [Data (<subscribe :app/db)]])
+   [Data (<subscribe [:app/db])]])
 
 
 (headsup/def-tab ::db "db" [Root])

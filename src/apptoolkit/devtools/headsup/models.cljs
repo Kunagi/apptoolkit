@@ -26,7 +26,7 @@
 
 
 (defn ModelsTypes []
-  (let [models-by-type (<subscribe :app/models)]
+  (let [models-by-type (<subscribe [:app/models])]
     (into [:div]
           (mapv #(Models (first %) (vals (second %)))
                 models-by-type))))
