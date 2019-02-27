@@ -51,7 +51,9 @@
      (let [command (-> command-args
                        (or {})
                        (assoc :app/command command-name))]
-       (transacting/transact db command)))))
+       (-> db
+           (transacting/transact command)
+           :db)))))
 
 
 (defn integrate-command-handlers-with-re-frame
