@@ -11,8 +11,6 @@
    [appkernel.transacting :as transacting]
    [appkernel.api :as app]
 
-   [material-desktop.desktop :as desktop]
-
    [apptoolkit.browserapp.subscriptions]))
 
 
