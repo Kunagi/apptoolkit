@@ -98,7 +98,9 @@
    (-> module
        (db/tree event-id
                 {:module {}
-                 :projection-handlers {:projection {}}}))))
+                 :projection-handlers {:projection {}}
+                 :attributes {:type {}
+                              :entity {}}}))))
 
 
 (rf/reg-sub

@@ -7,6 +7,13 @@
    [material-desktop.components :as mdc]))
 
 
+(defn AttributeCard [attribute]
+  [:> mui/Card
+   [:> mui/CardContent
+    [mdc/Double-H2 (:ident attribute) "Attribute"]
+    [mdc/Data attribute]]])
+
+
 (defn ProjectionHandlerCard
   [handler]
   (let [projection (:projection handler)]
@@ -20,6 +27,11 @@
   [:> mui/Card
    [:> mui/CardContent
     [mdc/Double-H2 (:ident event) "Event"]
+    (into [:div]
+          (mapv (fn [attribute]
+                  [AttributeCard attribute])
+                (get event :attributes)))
+    [:hr]
     [mdc/Data event]]])
 
 
