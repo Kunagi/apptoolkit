@@ -1,4 +1,6 @@
-{:own [kunagi/material-desktop]
+{:own [kunagi/material-desktop
+       kunagi/model-driver
+       kunagi/domain-model]
  :foreign {
            expound                   {:mvn/version "0.7.1"}
            mvxcvi/puget              {:mvn/version "1.1.0"}

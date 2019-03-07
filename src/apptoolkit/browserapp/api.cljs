@@ -74,6 +74,7 @@
   (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
   (integrate-command-handlers-with-re-frame)
+  ;; (rf/dispatch-sync [(keyword (:app/name config-edn) "init")])
   (app/start! (if config-edn
                 (reader/read-string config-edn)
                 {}))

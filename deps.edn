@@ -8,8 +8,10 @@
                                "../bindscript/src"
                                "../browser-headsup/src"
                                "../conform/src"
+                               "../domain-model/src"
                                "../facts-db/src"
-                               "../material-desktop/src"],
+                               "../material-desktop/src"
+                               "../model-driver/src"],
                  :main-opts ["--main" "figwheel.main" "--build" "dev"]}},
  :deps {clj-pdf {:mvn/version "2.2.33"},
         clj-pdf-markdown {:mvn/version "0.2.1"},
@@ -23,7 +25,9 @@
         ring-oauth2 {:mvn/version "0.1.4"},
         com.auth0/java-jwt {:mvn/version "3.7.0"},
         com.taoensso/sente {:mvn/version "1.13.1"},
+        kunagi/domain-model {:local/root "../domain-model"},
         kunagi/material-desktop {:local/root "../material-desktop"},
+        kunagi/model-driver {:local/root "../model-driver"},
         mvxcvi/puget {:mvn/version "1.1.0"},
         org.clojure/clojure {:mvn/version "1.10.0"},
         ring/ring-defaults {:mvn/version "0.3.2"}},
