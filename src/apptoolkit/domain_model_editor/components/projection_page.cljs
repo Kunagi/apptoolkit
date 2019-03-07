@@ -7,13 +7,37 @@
    [material-desktop.components :as mdc]))
 
 
+(defn EventHandlerCard
+  [event-handler]
+  (let [event (:event event-handler)]
+    [:> mui/Card
+     [:> mui/CardContent
+      [mdc/Double-H2 (:ident event) "Event"]
+      [mdc/Data event-handler]]]))
+
+
+(defn ProjectionCard [projection]
+  [:> mui/Card
+   [:> mui/CardContent
+    [mdc/Double-H2 (:ident projection) "Projection"]
+    [mdc/Data projection]]])
+
+
 (defn ProjectionWorkarea
   [{:as args :keys [module-ident projection-id]}]
   (let [projection (<subscribe [:domain-model-editor/projection
                                 {:module-ident module-ident
                                  :projection-id projection-id}])]
     [:div
-     (mdc/Data args)
-     [:hr]
-     (mdc/Data projection)
-     [:hr]]))
+     ;; (mdc/Data args)
+     ;; [:hr]
+     ;; (mdc/Data projection)
+     ;; [:hr]
+     [mdc/Row
+      {}
+      (into [mdc/Column
+             {}]
+            (mapv (fn [event-handler]
+                    [EventHandlerCard event-handler])
+                  (get projection :event-handlers)))
+      [ProjectionCard projection]]]))

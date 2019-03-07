@@ -86,7 +86,7 @@
  (fn [module [_ {:keys [projection-id]}]]
    (-> module
        (db/tree projection-id {:module {}
-                               :events {}}))))
+                               :event-handlers {:event {}}}))))
 
 
 (rf/reg-sub
