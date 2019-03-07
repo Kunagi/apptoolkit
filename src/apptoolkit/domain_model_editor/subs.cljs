@@ -46,24 +46,28 @@
 
 
 (defn assoc-goto-event-on-element [element]
-  (assoc element :goto-event [:material-desktop/activate-page
-                              {:page-key (keyword (name :domain-model-editor)
-                                                  (:db/type element))
-                               :page-args {:entity-id (:db/id element)}}]))
+  (let [module-ident (get-in element [:module :ident])
+        type (:db/type element)
+        arg-id-key (keyword (str (name type) "-id"))]
+    (assoc element :goto-event [:material-desktop/activate-page
+                                {:page-key (keyword (name :domain-model-editor)
+                                                    (name type))
+                                 :page-args {:module-ident module-ident
+                                             arg-id-key (:db/id element)}}])))
 
 
 (rf/reg-sub
  :domain-model-editor/module
  (fn [[_ {:keys [module-ident]}]]
    (rf/subscribe [:domain-model/module {:module-ident module-ident}]))
- (fn [module _]
+ (fn [module [_ {:keys [module-ident]}]]
    (let [module-id (db/fact module :module :db/id)]
      (-> module
-         (db/tree module-id {:entities {}
-                             :events {}
-                             :projections {}
-                             :types {}
-                             :commands {}})
+         (db/tree module-id {:entities {:module {}}
+                             :events {:module {}}
+                             :projections {:module {}}
+                             :types {:module {}}
+                             :commands {:module {}}})
 
          (update :entities    #(mapv assoc-goto-event-on-element %))
          (update :events      #(mapv assoc-goto-event-on-element %))
@@ -73,6 +77,16 @@
          ;; provide events for creating elements
          (assoc :create-events {:entity [:domain-model-editor/create-entity-triggered
                                          {:module-id module-id}]})))))
+
+
+(rf/reg-sub
+ :domain-model-editor/projection
+ (fn [[_ {:keys [module-ident]}]]
+   (rf/subscribe [:domain-model/module {:module-ident module-ident}]))
+ (fn [module [_ {:keys [projection-id]}]]
+   (-> module
+       (db/tree projection-id {:module {}
+                               :events {}}))))
 
 
 (rf/reg-sub

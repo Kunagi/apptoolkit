@@ -9,7 +9,8 @@
 
    [apptoolkit.domain-model-editor.components.model-page :refer [ModelWorkarea]]
    [apptoolkit.domain-model-editor.components.module-page :refer [ModuleWorkarea]]
-   [apptoolkit.domain-model-editor.components.entity-page :refer [EntityWorkarea]]))
+   [apptoolkit.domain-model-editor.components.entity-page :refer [EntityWorkarea]]
+   [apptoolkit.domain-model-editor.components.projection-page :refer [ProjectionWorkarea]]))
 
 
 (defn create-page [title workarea-component]
@@ -18,9 +19,10 @@
 
 
 (def pages
-  {:domain-model-editor/model  (create-page "Domain Model" ModelWorkarea)
-   :domain-model-editor/module (create-page "Module" ModuleWorkarea)
-   :domain-model-editor/entity (create-page "Entity" EntityWorkarea)})
+  {:domain-model-editor/model      (create-page "Domain Model" ModelWorkarea)
+   :domain-model-editor/module     (create-page "Module" ModuleWorkarea)
+   :domain-model-editor/entity     (create-page "Entity" EntityWorkarea)
+   :domain-model-editor/projection (create-page "Projection" ProjectionWorkarea)})
 
 
 (defn Desktop []
