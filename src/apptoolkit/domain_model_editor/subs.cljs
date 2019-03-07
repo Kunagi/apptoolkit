@@ -59,7 +59,10 @@
    (let [module-id (db/fact module :module :db/id)]
      (-> module
          (db/tree module-id {:entities {}
-                             :events {}})
+                             :events {}
+                             :projections {}
+                             :types {}
+                             :commands {}})
 
          (update :entities #(mapv assoc-goto-event-on-entity %))
 

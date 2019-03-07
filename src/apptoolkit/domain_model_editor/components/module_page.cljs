@@ -93,7 +93,9 @@
    [mdc/Double-H1 "Module" (:db/id module) "Module"]
    [mdc/Columns
     [EntitiesList module]
-    [ElementsList module (-> module :events) :event]]])
+    [ElementsList module (-> module :events) :event]
+    [ElementsList module (-> module :projections) :projection]
+    [ElementsList module (-> module :types) :type]]])
 
 
 (defn ModuleWorkarea
@@ -101,6 +103,6 @@
   [:div
    ;; [mdc/Data (<subscribe [:material-desktop/current-page-args])]
    ;; [:hr]
-   ;; [mdc/SubscriptionProgressBoundary Doc [:domain-model-editor/module {:module-ident :kunagi}]]
+   ;; [mdc/Data (<subscribe [:domain-model-editor/module {:module-ident :kunagi}])]
    ;; [:hr]
    [mdc/SubscriptionProgressBoundary Module [:domain-model-editor/module {:module-ident :kunagi}]]])
