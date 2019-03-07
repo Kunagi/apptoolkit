@@ -10,6 +10,7 @@
    [apptoolkit.domain-model-editor.components.model-page :refer [ModelWorkarea]]
    [apptoolkit.domain-model-editor.components.module-page :refer [ModuleWorkarea]]
    [apptoolkit.domain-model-editor.components.entity-page :refer [EntityWorkarea]]
+   [apptoolkit.domain-model-editor.components.event-page :refer [EventWorkarea]]
    [apptoolkit.domain-model-editor.components.projection-page :refer [ProjectionWorkarea]]))
 
 
@@ -22,6 +23,7 @@
   {:domain-model-editor/model      (create-page "Domain Model" ModelWorkarea)
    :domain-model-editor/module     (create-page "Module" ModuleWorkarea)
    :domain-model-editor/entity     (create-page "Entity" EntityWorkarea)
+   :domain-model-editor/event      (create-page "Event" EventWorkarea)
    :domain-model-editor/projection (create-page "Projection" ProjectionWorkarea)})
 
 

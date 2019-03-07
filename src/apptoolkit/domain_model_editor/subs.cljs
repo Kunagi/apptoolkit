@@ -85,8 +85,20 @@
    (rf/subscribe [:domain-model/module {:module-ident module-ident}]))
  (fn [module [_ {:keys [projection-id]}]]
    (-> module
-       (db/tree projection-id {:module {}
-                               :event-handlers {:event {}}}))))
+       (db/tree projection-id
+                {:module {}
+                 :event-handlers {:event {}}}))))
+
+
+(rf/reg-sub
+ :domain-model-editor/event
+ (fn [[_ {:keys [module-ident]}]]
+   (rf/subscribe [:domain-model/module {:module-ident module-ident}]))
+ (fn [module [_ {:keys [event-id]}]]
+   (-> module
+       (db/tree event-id
+                {:module {}
+                 :projection-handlers {:projection {}}}))))
 
 
 (rf/reg-sub
