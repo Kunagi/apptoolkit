@@ -60,12 +60,14 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
        </html>"))))
 
 (defn default-routes [page-config]
-  [(compojure/GET  "/" [] (app-html page-config))
-   (compojure/GET "/ping" [] (fn [request] (str request)))
+  [(compojure/GET  "/"               [] {:status 301 :headers {"Location" "/ui/"}})
+   (compojure/GET  "/ui"             [] {:status 301 :headers {"Location" "/ui/"}})
+   (compojure/GET  "/ui/**"          [] (app-html page-config))
+   (compojure/GET "/ping"            [] (fn [request] (str request)))
    (compojure/GET "/oauth/completed" [] oauth/handle-oauth-completed)
-   (compojure-route/files "/" {:root "target/public"}) ;; TODO remove in prod
-   (compojure-route/resources "/" {:root "public"})
-   (compojure-route/not-found "404 - Page not found")])
+   (compojure-route/files "/"        {:root "target/public"}) ;; TODO remove in prod
+   (compojure-route/resources "/"    {:root "public"})
+   (compojure-route/not-found        "404 - Page not found")])
 
 (defn- app-routes [plain-routes oauth2-config]
 
@@ -83,7 +85,7 @@ div.preloader div {color: #000; margin: 5px 0; text-transform: uppercase; font-f
 
 (defn start!
   [db]
-  (let [page-config {:app-js-path (if (:dev-mode? db) "cljs-out/dev-main.js" "cljs-out/prod-main.js")
+  (let [page-config {:app-js-path (if (:dev-mode? db) "/cljs-out/dev-main.js" "/cljs-out/prod-main.js")
                      :app-name (:app/name db)}
         port (get db :http-server/port dev-port)
         oauth2-config (oauth/create-ring-oauth2-config db)
