@@ -5,6 +5,8 @@
    [re-frame.core :as rf]
    [re-frame.db :as rf-db]
 
+   [model-driver.model.api]
+
    [material-desktop.app :as desktop-app]
    [appkernel.integration :as integration]
    ;; [appkernel.eventhandling :as eventhandling]
@@ -68,16 +70,16 @@
   (desktop-app/mount-app))
 
 
-(defn start [config-edn ui-root-component]
+(defn start [config-edn ui-root-component config]
   (tap> [::start config-edn])
   (desktop-app/start ui-root-component)
   (rf/dispatch-sync [::init])
   (integrate-event-handlers-with-re-frame)
   (integrate-command-handlers-with-re-frame)
   ;; (rf/dispatch-sync [(keyword (:app/name config-edn) "init")])
-  (app/start! (if config-edn
-                (reader/read-string config-edn)
-                {}))
+  (app/start! (merge
+               (or (reader/read-string config-edn) {})
+               config))
   (mount-app))
 
 

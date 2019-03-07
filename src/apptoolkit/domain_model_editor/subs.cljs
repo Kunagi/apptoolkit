@@ -2,8 +2,7 @@
   (:require
    [re-frame.core :as rf]
    [facts-db.api :as db]
-   [facts-db.ddapi :as ddapi]
-   [domain-model.api :as dm]))
+   [facts-db.ddapi :as ddapi]))
 
 
 (rf/reg-sub

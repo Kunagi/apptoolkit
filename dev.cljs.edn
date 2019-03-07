@@ -3,7 +3,6 @@
               "../bindscript/src"
               "../browser-headsup/src"
               "../conform/src"
-              "../domain-model/src"
               "../facts-db/src"
               "../material-desktop/src"
               "../model-driver/src"]}
