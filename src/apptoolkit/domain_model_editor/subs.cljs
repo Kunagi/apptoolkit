@@ -45,10 +45,11 @@
 
 
 
-(defn assoc-goto-event-on-entity [entity]
-  (assoc entity :goto-event [:material-desktop/activate-page
-                             {:page-key :domain-model-editor/entity
-                              :page-args {:entity-id (:db/id entity)}}]))
+(defn assoc-goto-event-on-element [element]
+  (assoc element :goto-event [:material-desktop/activate-page
+                              {:page-key (keyword (name :domain-model-editor)
+                                                  (:db/type element))
+                               :page-args {:entity-id (:db/id element)}}]))
 
 
 (rf/reg-sub
@@ -64,7 +65,10 @@
                              :types {}
                              :commands {}})
 
-         (update :entities #(mapv assoc-goto-event-on-entity %))
+         (update :entities    #(mapv assoc-goto-event-on-element %))
+         (update :events      #(mapv assoc-goto-event-on-element %))
+         (update :projections #(mapv assoc-goto-event-on-element %))
+         (update :types       #(mapv assoc-goto-event-on-element %))
 
          ;; provide events for creating elements
          (assoc :create-events {:entity [:domain-model-editor/create-entity-triggered
