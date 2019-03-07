@@ -99,10 +99,13 @@
 
 
 (defn ModuleWorkarea
-  []
+  [{:keys [module-ident]}]
   [:div
-   ;; [mdc/Data (<subscribe [:material-desktop/current-page-args])]
+   ;; [mdc/Data (<subscribe [:material-desktop/current-page])]
    ;; [:hr]
    ;; [mdc/Data (<subscribe [:domain-model-editor/module {:module-ident :kunagi}])]
    ;; [:hr]
-   [mdc/SubscriptionProgressBoundary Module [:domain-model-editor/module {:module-ident :kunagi}]]])
+   ;; [mdc/Data page-args]
+   ;; [:hr]
+   [mdc/SubscriptionProgressBoundary Module [:domain-model-editor/module
+                                             {:module-ident module-ident}]]])
