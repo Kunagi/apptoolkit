@@ -4,7 +4,8 @@
    ["@material-ui/icons" :as icons]
 
    [material-desktop.api :refer [<subscribe dispatch>]]
-   [material-desktop.components :as mdc]))
+   [material-desktop.components :as mdc]
+   [apptoolkit.domain-model-editor.components.breadcrumbs :as breadcrumbs]))
 
 
 (defn AttributeCard [attribute]
@@ -43,6 +44,7 @@
                            {:module-ident module-ident
                             :event-id event-id}])]
     [:div
+     [breadcrumbs/BreadcrumbsForElement event]
      ;; (mdc/Data args)
      ;; [:hr]
      ;; (mdc/Data event)

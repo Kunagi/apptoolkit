@@ -28,12 +28,18 @@
             {:fields [{:label "Components"
                        :value (-> entity :components)}]}]]]])
 
-
-(defn EntityWorkarea []
-  (let [entity (<subscribe [:domain-model-editor/entity])
-        module (:module entity)]
+(defn EntityWorkarea
+  [args]
+  (let [module-ident (-> args (get "module") keyword)
+        entity-id (get args "entity")
+        entity (<subscribe [:domain-model-editor/entity
+                            {:module-ident module-ident
+                             :entity-id entity-id}])]
     [:div
-     [breadcrumbs/Breadcrumbs {}
-      [breadcrumbs/ModelBreadcrumb]
-      [breadcrumbs/ModuleBreadcrumb module]]
-     [EntityCard entity]]))
+     ;; (mdc/Data args)
+     ;; [:hr]
+     ;; (mdc/Data projection)
+     ;; [:hr]
+     [:div
+      [breadcrumbs/BreadcrumbsForElement entity]
+      [EntityCard entity]]]))

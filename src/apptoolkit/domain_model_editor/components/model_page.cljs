@@ -9,7 +9,9 @@
    [material-desktop.api :refer [<subscribe dispatch>]]
    [material-desktop.components :as mdc]
    [material-desktop.toolbar :as toolbar]
-   [material-desktop.expansion-panel-list :as expansion-panel-list]))
+   [material-desktop.expansion-panel-list :as expansion-panel-list]
+
+   [apptoolkit.domain-model-editor.components.breadcrumbs :as breadcrumbs]))
 
 
 (defn ModuleCard
@@ -30,6 +32,7 @@
   []
   (let [model (<subscribe [:domain-model-editor/model])]
     [:div
+     [breadcrumbs/BreadcrumbsForModel]
      ;; [:hr]
      ;; (mdc/Data (<subscribe :domain-model/modules-ids {:model-id model-id}))
      ;; (mdc/Data model)

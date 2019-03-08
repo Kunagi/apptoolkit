@@ -4,7 +4,8 @@
    ["@material-ui/icons" :as icons]
 
    [material-desktop.api :refer [<subscribe dispatch>]]
-   [material-desktop.components :as mdc]))
+   [material-desktop.components :as mdc]
+   [apptoolkit.domain-model-editor.components.breadcrumbs :as breadcrumbs]))
 
 
 (defn EventHandlerCard
@@ -31,6 +32,7 @@
                                 {:module-ident module-ident
                                  :projection-id projection-id}])]
     [:div
+     [breadcrumbs/BreadcrumbsForElement projection]
      ;; (mdc/Data args)
      ;; [:hr]
      ;; (mdc/Data projection)

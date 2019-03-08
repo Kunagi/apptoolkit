@@ -3,7 +3,8 @@
    [re-frame.core :as rf]
    [facts-db.api :as db]
    [facts-db.ddapi :as ddapi]
-   [material-desktop.desktop.api :as desktop]))
+   [material-desktop.desktop.api :as desktop]
+   [material-desktop.desktop.navigation :as navigation]))
 
 
 (rf/reg-event-db
@@ -32,7 +33,8 @@
                                      :ident ident
                                      :module-id module-id
                                      :container-id container-id}]])
-         (desktop/activate-page :domain-model-editor/entity {:entity-id entity-id})))))
+         (navigation/navigate!-with-db :domain-model-editor/entity
+                                       {:entity-id entity-id})))))
 
 
 (rf/reg-event-db

@@ -9,7 +9,9 @@
    [material-desktop.api :refer [<subscribe dispatch>]]
    [material-desktop.components :as mdc]
    [material-desktop.toolbar :as toolbar]
-   [material-desktop.expansion-panel-list :as expansion-panel-list]))
+   [material-desktop.expansion-panel-list :as expansion-panel-list]
+
+   [apptoolkit.domain-model-editor.components.breadcrumbs :as breadcrumbs]))
 
 
 ;;; generic element components
@@ -90,7 +92,7 @@
 (defn Module
   [module]
   [:div
-   [mdc/Double-H1 "Module" (:db/id module) "Module"]
+   [breadcrumbs/BreadcrumbsForModule module]
    [mdc/Columns
     [EntitiesList module]
     [ElementsList module (-> module :events) :event]

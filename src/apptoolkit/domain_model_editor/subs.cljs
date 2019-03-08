@@ -35,7 +35,7 @@
    {:modules
     (map (fn [module-ident]
            {:ident module-ident
-            :goto-event [:material-desktop/activate-page
+            :goto-event [:material-desktop/desktop.page-switch-requested
                          {:page-key :domain-model-editor/module
                           :page-args {"module" (name module-ident)}}]})
          modules-idents)
@@ -49,7 +49,7 @@
   (let [module-ident (get-in element [:module :ident])
         type (:db/type element)
         id-arg (name type)]
-    (assoc element :goto-event [:material-desktop/activate-page
+    (assoc element :goto-event [:material-desktop/desktop.page-switch-requested
                                 {:page-key (keyword (name :domain-model-editor)
                                                     (name type))
                                  :page-args {"module" (name module-ident)
@@ -105,12 +105,10 @@
 
 (rf/reg-sub
  :domain-model-editor/entity
- (fn []
-   [(rf/subscribe [:domain-model/db])
-    (rf/subscribe [:material-desktop/current-page-args])])
- (fn [[domain-model-db current-page-args] _]
-   (if-not domain-model-db
-     nil
-     (let [entity-id (:entity-id current-page-args)]
-       (-> domain-model-db
-           (db/tree entity-id {:module {}}))))))
+ (fn [[_ {:keys [module-ident]}]]
+   (rf/subscribe [:domain-model/module {:module-ident module-ident}]))
+ (fn [module [_ {:keys [entity-id]}]]
+   (-> module
+       (db/tree entity-id
+                {:module {}
+                 :facts {}}))))
