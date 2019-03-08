@@ -37,7 +37,7 @@
            {:ident module-ident
             :goto-event [:material-desktop/activate-page
                          {:page-key :domain-model-editor/module
-                          :page-args {:module-ident module-ident}}]})
+                          :page-args {"module" (name module-ident)}}]})
          modules-idents)
     :module-subscriptions
     (map (fn [module-id] [:domain-model-editor/module {:module-id module-id}])
@@ -48,12 +48,12 @@
 (defn assoc-goto-event-on-element [element]
   (let [module-ident (get-in element [:module :ident])
         type (:db/type element)
-        arg-id-key (keyword (str (name type) "-id"))]
+        id-arg (name type)]
     (assoc element :goto-event [:material-desktop/activate-page
                                 {:page-key (keyword (name :domain-model-editor)
                                                     (name type))
-                                 :page-args {:module-ident module-ident
-                                             arg-id-key (:db/id element)}}])))
+                                 :page-args {"module" (name module-ident)
+                                             id-arg (:db/id element)}}])))
 
 
 (rf/reg-sub

@@ -36,8 +36,10 @@
 
 
 (defn EventWorkarea
-  [{:as args :keys [module-ident event-id]}]
-  (let [event (<subscribe [:domain-model-editor/event
+  [args]
+  (let [module-ident (-> args (get "module") keyword)
+        event-id (get args "event")
+        event (<subscribe [:domain-model-editor/event
                            {:module-ident module-ident
                             :event-id event-id}])]
     [:div

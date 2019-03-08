@@ -7,6 +7,7 @@
 
    [model-driver.model.api]
 
+   [material-desktop.desktop.api :as desktop]
    [material-desktop.app :as desktop-app]
    [appkernel.integration :as integration]
    ;; [appkernel.eventhandling :as eventhandling]
@@ -64,6 +65,8 @@
                   (get-in [:appkernel/command-handlers])
                   (vals)
                   (->> (map :command) (into #{}))))))
+
+
 
 
 (defn mount-app []

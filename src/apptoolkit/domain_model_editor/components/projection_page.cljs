@@ -24,8 +24,10 @@
 
 
 (defn ProjectionWorkarea
-  [{:as args :keys [module-ident projection-id]}]
-  (let [projection (<subscribe [:domain-model-editor/projection
+  [args]
+  (let [module-ident (-> args (get "module") keyword)
+        projection-id (get args "projection")
+        projection (<subscribe [:domain-model-editor/projection
                                 {:module-ident module-ident
                                  :projection-id projection-id}])]
     [:div
