@@ -10,8 +10,47 @@
    [material-desktop.components :as mdc]
    [material-desktop.toolbar :as toolbar]
    [material-desktop.expansion-panel-list :as expansion-panel-list]
+   [material-desktop.box-editor :as box-editor]
 
    [apptoolkit.domain-model-editor.components.breadcrumbs :as breadcrumbs]))
+
+
+;;; boxes
+
+
+
+
+(defn ElementBox [element]
+  [box-editor/Box
+   {;;:type-label "Event"
+    :label (:ident element)}])
+
+
+(defn ModuleElementsBox [elements type-label]
+  [box-editor/Box
+   {:type-label type-label}
+   (for [element elements]
+     [ElementBox element])])
+
+
+(defn ModuleBox [module]
+  [box-editor/Box
+   {:type-label "Module"
+    :label (:ident module)}
+   ;; (for [d [:a :b :C]]
+   ;;   [DummyBox])])
+   [ModuleElementsBox (:events module) "events"]
+   [ModuleElementsBox (:projections module) "projections"]
+   [ModuleElementsBox (:types module) "types"]])
+
+
+(defn ModuleBoxes [module]
+  [:div
+   [:hr]
+   [box-editor/BoxContainer
+    {}
+    [ModuleBox module]]
+   [:hr]])
 
 
 ;;; generic element components
@@ -93,6 +132,7 @@
   [module]
   [:div
    [breadcrumbs/BreadcrumbsForModule module]
+   [ModuleBoxes module]
    [mdc/Columns
     [EntitiesList module]
     [ElementsList module (-> module :events) :event]
